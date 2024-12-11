@@ -618,18 +618,19 @@ $('body').on('input select change', '#reportrange',function() {
                     <th class="col-md-2">Start Time (HH:MM)</th>
                     <th class="col-md-2">End Time (HH:MM)</th>
                     <th class="col-md-2">Hours</th>
+                    <th class="col-md-2">Over Time</th>
                     <th class="col-md-2">Action</th>
                 </tr>`);
             $('#tFoot').append(`
                 <tr style="text-align:end">
                     <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours:</td> 
-                    <td><input type="text" id="total_net" class="sumOfDays" name="total_net"  readonly/></td>
+                    <td><input type="text" id="total_net" class="sumOfDays" name="total_net" readonly/></td>
                 </tr>`);
         } else if (response.includes('SalesCommission')) {
             $('#tFoot').append(`
                 <tr style="text-align:end; display:none;">
-                    <td colspan="1" class="text-right" style="font-weight:bold;">Total Hours:</td> 
-                    <td><input type="text" id="total_net"  value="0.00" name="total_net"   readonly/></td>
+                    <td colspan="6" class="text-right" style="font-weight:bold;">Total Hours:</td> 
+                    <td><input type="text" id="total_net"  value="0.00" name="total_net" readonly/></td>
                 </tr>`);
         }
 
@@ -706,9 +707,15 @@ $('body').on('input select change', '#reportrange',function() {
                         <td class="finish-time_`+i+`">
                             <input id="finishTime${monStartWeekDays[i]}" name="end[]" class="hasTimepicker end" data-id="`+data_id+`" type="time" />
                         </td>
+
                         <td class="hours-worked_`+i+`"> 
                             <input id="hoursWorked${monStartWeekDays[i]}"  name="sum[]" class="timeSum hourly_tot_`+data_id+`" readonly type="text" />
                         </td>
+
+                        <td class="overtime_`+i+`">
+                            <input type="text" id="overTime_`+i+`" name="over_time[]" readonly/>
+                        </td>
+
                         <td>
                             <a style="color:white;" class="delete_day btnclr btn  m-b-5 m-r-2"><i class="fa fa-trash" aria-hidden="true"></i> </a>
                         </td>
@@ -802,11 +809,13 @@ $(document).on('change', '.weekly_hour', function () {
 });
 
 $(document).on('select change', '.end','.dailybreak', function () {
+    var $row = $(this).closest('tr');
     var $begin = $(this).closest('tr').find('.start').val();
     var $end = $(this).closest('tr').find('.end').val();
     let valuestart = moment($begin, "HH:mm");
     let valuestop = moment($end, "HH:mm");
     let timeDiff = moment.duration(valuestop.diff(valuestart));
+    console.log(timeDiff);
     var dailyBreakValue = parseInt($(this).closest('tr').find('.dailybreak').val()) || 0;
     var totalMinutes = timeDiff.asMinutes() - dailyBreakValue;
     var hours = Math.floor(totalMinutes / 60);
@@ -858,6 +867,16 @@ $(document).on('select change', '.end','.dailybreak', function () {
         total_netM += tableMinutes;
     });
 
+    var overtimeMinutes = Math.max(0, totalMinutes - 480);
+    var overtimeHours = Math.floor(overtimeMinutes / 60); 
+    var overtimeMinutesRemaining = overtimeMinutes % 60; 
+    var overtimeFormatted = overtimeHours.toString().padStart(2, '0') + ':' + overtimeMinutesRemaining.toString().padStart(2, '0');
+
+    var dataId = $row.find('input[name="over_time[]"]').attr('id');
+    if (dataId) {
+        $('#' + dataId).val(overtimeMinutes > 0 ? overtimeFormatted : '00:00');
+    }
+
     var timeConvertion = convertToTime(week_netH, week_netM);
     $('#hourly_'+data_id).val(timeConvertion).trigger('change');
     var timeConvertion = convertToTime(total_netH, total_netM);
@@ -866,6 +885,7 @@ $(document).on('select change', '.end','.dailybreak', function () {
 
 
 $(document).on('select change', '.start','.dailybreak', function () {
+    var $row = $(this).closest('tr');
     var $begin = $(this).closest('tr').find('.start').val();
     var $end = $(this).closest('tr').find('.end').val();
     let valuestart = moment($begin, "HH:mm");
@@ -917,6 +937,16 @@ $(document).on('select change', '.start','.dailybreak', function () {
         total_netH += tableHours;
         total_netM += tableMinutes;
     });
+
+    var overtimeMinutes = Math.max(0, totalMinutes - 480);
+    var overtimeHours = Math.floor(overtimeMinutes / 60); 
+    var overtimeMinutesRemaining = overtimeMinutes % 60; 
+    var overtimeFormatted = overtimeHours.toString().padStart(2, '0') + ':' + overtimeMinutesRemaining.toString().padStart(2, '0');
+    var dataId = $row.find('input[name="over_time[]"]').attr('id');
+    if (dataId) {
+        $('#' + dataId).val(overtimeMinutes > 0 ? overtimeFormatted : '00:00');
+    }
+
     var timeConvertion = convertToTime(week_netH, week_netM);
     $('#hourly_'+data_id).val(timeConvertion).trigger('change');
     var timeConvertion = convertToTime(total_netH,total_netM);

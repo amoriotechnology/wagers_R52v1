@@ -81,6 +81,7 @@
                                             <th style='height:25px;' class="col-md-2">Start Time (HH:MM)</th>
                                             <th style='height:25px;' class="col-md-2">End Time (HH:MM)</th>
                                             <th style='height:25px;' class="col-md-5">Hours</th>
+                                            <th style='height:25px;' class="col-md-2">Over Time</th>
                                             <th style='height:25px;' class="col-md-5">Action</th>
                                         <?php } elseif ($employee_name[0]['payroll_type'] == 'Fixed') { ?>
                                             <th style='height:25px;' class="col-md-2">Date</th>
@@ -123,12 +124,13 @@
 
                                  
                                     foreach($time_sheet_data as $tsheet) {
-                                        $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
+                                        $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break'], 'over_time' => $tsheet['over_time']];
                                         if( !empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
                                          
                                             $printedDates[] = $tsheet['Date'];
                                         }
                                     }
+                                    
                                     $data_id=0;
                                     $weekly_data = json_decode($time_sheet_data[0]['weekly_hours']);$j=0;
                                     for($i = 0; $i < $get_days; $i++) {
@@ -160,6 +162,11 @@
                                     <td class="hours-worked">
                                         <input readonly name="sum[]" class="timeSum hourly_tot_<?php echo $data_id;  ?>" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                     </td>
+
+                                    <td class="overtime">
+                                        <input readonly name="over_time[]" class="overTime_<?php echo $data_id;  ?>" value="<?= empty($timesheetdata[$date]['over_time']) ? '0.00' : $timesheetdata[$date]['over_time']; ?>" type="text">
+                                    </td>
+
                                     <td>
                                         <a style="color:white;" class="delete_day btnclr btn  m-b-5 m-r-2 <?php if ($timesheetdata[$date]['edit'] == 1) { echo 'disabled'; } ?> "><i class="fa fa-trash" aria-hidden="true"></i> </a>
                                     </td>
@@ -335,9 +342,12 @@ for(let i = 0; i <= Days; i++) {
             <td class="start-time_<?= $i; ?>"><input id="startTime<?= $monStartWeekDays[$i]; ?>" name="start[]" class="hasTimepicker start" type="time" /></td>
             <td class="finish-time_<?= $i; ?>"><input id="finishTime<?= $monStartWeekDays[$i]; ?>" name="end[]" class="hasTimepicker end" type="time" /></td>
             <td class="hours-worked_<?= $i; ?>"><input id="hoursWorked<?= $monStartWeekDays[$i]; ?>" name="sum[]" class="timeSum" readonly type="text" /></td>
+            <td class="overtime__<?= $i; ?>"><input id="overTime_<?= $monStartWeekDays[$i]; ?>" name="over_time[]" readonly type="text" /></td>
         <?php } elseif ($time_sheet_data[0]['payroll_type'] == 'Fixed') { ?>
             <td style="display:none;" class="start-time_<?= $i; ?>"><input id="startTime<?= $monStartWeekDays[$i]; ?>" name="start[]" class="hasTimepicker start" type="time" /></td>
+
             <td style="display:none;" class="finish-time_<?= $i; ?>"><input id="finishTime<?= $monStartWeekDays[$i]; ?>" name="end[]" class="hasTimepicker end" type="time" /></td>
+
             <td class="hours-worked_<?= $i; ?>">
                 <input id="hoursWorked<?= $monStartWeekDays[$i]; ?>" name="present[]" class="timeSum present" readonly type="checkbox" style="width: 20px; height: 20px" />
             </td>
@@ -364,6 +374,7 @@ function convertToTime(hr,min)
     return `${hours+hr}:${minutes}`;
 }
 $(document).on('select change', '.end','.dailybreak', function () {
+    var $row = $(this).closest('tr');
     var $begin = $(this).closest('tr').find('.start').val();
     var $end = $(this).closest('tr').find('.end').val();
     let valuestart = moment($begin, "HH:mm");
@@ -422,10 +433,21 @@ $(document).on('select change', '.end','.dailybreak', function () {
         tableHours += Math.floor(tableMinutes / 60);
         tableMinutes = tableMinutes % 60;
     }
+
+    var overtimeMinutes = Math.max(0, totalMinutes - 480); 
+    var overtimeHours = Math.floor(overtimeMinutes / 60);
+    var overtimeMinutesRemaining = overtimeMinutes % 60;
+    var overtimeFormatted = overtimeHours.toString().padStart(2, '0') + ':' + overtimeMinutesRemaining.toString().padStart(2, '0');
+    var overtimeField = $row.find('input[name="over_time[]"]'); 
+    if (overtimeField.length) {
+        overtimeField.val(overtimeMinutes > 0 ? overtimeFormatted : '00:00'); 
+    }
+
    var timeConvertion = convertToTime(tableHours, tableMinutes);
     $('#total_net').val(timeConvertion).trigger('change');
 });
 $(document).on('select change', '.start','.dailybreak', function () {
+    var $row = $(this).closest('tr');
     var $begin = $(this).closest('tr').find('.start').val();
     var $end = $(this).closest('tr').find('.end').val();
     let valuestart = moment($begin, "HH:mm");
@@ -474,6 +496,16 @@ $(document).on('select change', '.start','.dailybreak', function () {
         total_netH += tableHours;
         total_netM += tableMinutes;
     });
+
+    var overtimeMinutes = Math.max(0, totalMinutes - 480); 
+    var overtimeHours = Math.floor(overtimeMinutes / 60);
+    var overtimeMinutesRemaining = overtimeMinutes % 60;
+    var overtimeFormatted = overtimeHours.toString().padStart(2, '0') + ':' + overtimeMinutesRemaining.toString().padStart(2, '0');
+    var overtimeField = $row.find('input[name="over_time[]"]'); 
+    if (overtimeField.length) {
+        overtimeField.val(overtimeMinutes > 0 ? overtimeFormatted : '00:00'); 
+    }
+
     var timeConvertion = convertToTime(week_netH, week_netM);
     $('#hourly_'+data_id).val(timeConvertion).trigger('change');
     var timeConvertion = convertToTime(total_netH,total_netM);

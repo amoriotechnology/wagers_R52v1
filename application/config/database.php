@@ -1,4 +1,3 @@
-
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -10,9 +9,9 @@ $active_record = TRUE; //ci version 2.x
 $db['default'] = array(
     'dsn'          => '',
     'hostname'     => 'localhost',
-    'username' => 'root',
-    'password' => '',
-    'database' => 'stockeai',
+    'username'     => 'root',
+    'password'     => '',
+    'database'     => 'wagers_3dec2024',
     'dbdriver'     => 'mysqli',
     'dbprefix'     => '',
     'pconnect'     => FALSE,
@@ -24,7 +23,7 @@ $db['default'] = array(
     'swap_pre'     => '',
     'encrypt'      => FALSE,
     'compress'     => FALSE,
-    'autoinit'     => TRUE, //ci version 2.x
+    'autoinit'     => TRUE, 
     'stricton'     => FALSE,
     'failover'     => array(),
     'save_queries' => TRUE,

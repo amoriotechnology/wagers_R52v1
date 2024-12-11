@@ -254,6 +254,7 @@ th,td{
                                         <th style='height:25px;' class="col-md-2">Start Time (HH:MM)</th>
                                         <th style='height:25px;' class="col-md-2">End Time (HH:MM)</th>
                                         <th style='height:25px;' class="col-md-5">Hours</th>
+                                        <th style='height:25px;' class="col-md-5">Over Time</th>
                                         <th style='height:25px;' class="col-md-5">Action</th>
 
                                     <?php } elseif ($employee_name[0]['payroll_type'] != 'Hourly') { ?>
@@ -295,7 +296,7 @@ th,td{
 
                                 // Rendering the sorted table rows
                                 foreach($time_sheet_data as $tsheet) {
-                                    $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
+                                    $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break'], 'over_time' => $tsheet['over_time']];
                                     if(!empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates) ) {
                                         $printedDates[] = $tsheet['Date'];
                                     }
@@ -331,6 +332,10 @@ th,td{
                                 <td class="hours-worked">
                                     <input readonly name="sum[]" class="timeSum hourly_tot_<?php echo $data_id;  ?>" value="<?= empty($date) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                 </td>
+                                <td class="overtime">
+                                    <input readonly name="over_time[]" class="overTime_<?php echo $data_id;  ?>" value="<?= empty($timesheetdata[$date]['over_time']) ? '0.00' : $timesheetdata[$date]['over_time']; ?>" type="text">
+                                </td>
+
                                 <td>
                                     <a style='color:white;' class="delete_day btnclr btn  m-b-5 m-r-2"><i class="fa fa-trash" aria-hidden="true"></i> </a>
                                 </td>
