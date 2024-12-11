@@ -639,4 +639,16 @@ $(document).ready(function() {
     }
 });
 
+
+function showToast() {
+    toastr.warning("This payslip has been approved, and another cannot be generated", { 
+        closeButton: false,
+        timeOut: 1000
+    });
+}
+
+function hideToast() {
+    toastr.clear(); 
+}
+
 </script>

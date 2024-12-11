@@ -387,7 +387,7 @@ th,td{
                                 $weekly_data = json_decode($time_sheet_data[0]['weekly_hours']);
                                 for($j = 0; $j < $get_days; $j++) {
                                     $date = date('m/d/Y', strtotime($start_date .' +'.$j.' day'));
-                                   var_dump($weekly_data[$i]);
+                                   
                             ?>
                             <tr>
                                 <?php if ($employee_name[0]['payroll_type'] == 'Hourly') { ?>

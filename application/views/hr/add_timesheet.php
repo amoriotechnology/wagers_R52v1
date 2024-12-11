@@ -85,6 +85,7 @@
                         </div>
 
                         <input type="submit" value="Submit" class="sub_btn btnclr btn text-center"/> 
+
                         <input type="hidden" id="csrf" data-name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
                         <input type="hidden" id="week_setting" data-start="<?= (!empty($setting_detail[0]['start_week'])) ? $setting_detail[0]['start_week'] : 'Monday'; ?>" data-end="<?= (!empty($setting_detail[0]['end_week']) ? $setting_detail[0]['end_week'] : 'Friday'); ?>" >
                     </div>               
@@ -506,6 +507,16 @@ function Timesheetcheck() {
     });
 }
 
+$('.sub_btn').on('mouseenter', function() {
+    if ($(this).is(':disabled')) {
+        showToast(); 
+    }
+});
+
+$('.sub_btn').on('mouseleave', function() {
+    hideToast(); 
+});
+
 
 // while active select & change daterangepicker and creating hourly / Fixed table
 $('body').on('input select change', '#reportrange',function() {
@@ -653,6 +664,7 @@ $('body').on('input select change', '#reportrange',function() {
                 response.includes('Fixed')
             ){
                 var presentCount = $('input[type="checkbox"].present:checked').length + 1;
+            console.log(presentCount, "presentCount");
                 $('#total_net').val(presentCount);
                 if(presentCount > 0) {
                     $('.sub_btn').removeAttr('disabled');
@@ -1062,16 +1074,26 @@ function convertToTime(hr,min)
 $(document).ready(function() {
     $('.sub_btn').attr('disabled', 'disabled');
 
-    $(document).on('change keyup', '#total_net, #reportrange, input[type="checkbox"].present:checked', function() {
+    $('body').on('change keyup', '#total_net, #reportrange, input[type="checkbox"].present:checked', function() {
         var total_net = $('#total_net').val();
-        
+        $('.sub_btn').attr('disabled', 'disabled');
         if(total_net != "" && total_net != undefined) {
             $('.sub_btn').removeAttr('disabled');
-        } else {
-            $('.sub_btn').attr('disabled', 'disabled');
         }
     });
 })
 
+
+
+function showToast() {
+    toastr.warning("Please ensure all required fields are completed: Employee Name and Date Range.", { 
+        closeButton: false,
+        timeOut: 1000
+    });
+}
+
+function hideToast() {
+    toastr.clear(); 
+}
 
 </script>
