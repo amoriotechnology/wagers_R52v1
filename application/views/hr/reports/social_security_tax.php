@@ -30,16 +30,11 @@
                     <label>Employee</label>&nbsp;&nbsp;&nbsp;
                     <select id="customer-name-filter" name="employee_name" class="form-control selectemployee employee_name">
                         <option value="All">All</option>
-                                             <?php
-                            foreach ($employee_data as $emp) {
-                               
-                               // if (!empty($emp['first_name']) || !empty($emp['last_name'])) { ?>
-                                    <option value="<?php echo $emp['first_name']." ".$emp['middle_name']." ".$emp['last_name']; ?>">
-                                        <?php echo $emp['first_name']." ".$emp['middle_name']." ".$emp['last_name']; ?>
-                                    </option>
-                                <?php //} 
-                            }
-                            ?>
+                        <?php foreach ($employee_data as $emp) { ?>
+                            <option value="<?php echo $emp['first_name']." ".$emp['middle_name']." ".$emp['last_name']; ?>">
+                                <?php echo $emp['first_name']." ".$emp['middle_name']." ".$emp['last_name']; ?>
+                            </option>
+                        <?php } ?>
                     </select>
                 </div>
                 <div class="col-md-6 col-sm-6">
@@ -61,7 +56,7 @@
                             <tr  class="btnclr">
                                 <th rowspan="2" class="1 value" data-col="1" style="height: 45.0114px; text-align:center; width: 100px;"><?php echo 'S.NO'?></th>
                                 <th rowspan="2" class="2 value" data-col="2" style="text-align:center; width:100px;"><?php echo 'Employee Name'?></th>
-                                 <th rowspan="2" class="2 value" data-col="2" style="text-align:center; width: 100px;"><?php echo 'Employee Tax'?></th>
+                                <th rowspan="2" class="2 value" data-col="2" style="text-align:center; width: 100px;"><?php echo 'Employee Tax'?></th>
                                 <th rowspan="2" class="3 value" data-col="3" style="text-align:center; width: 100px;"><?php echo 'TimeSheet ID'?></th>
                                 <th rowspan="2" class="4 value" data-col="4" style="text-align:center; width: 100px;"><?php echo 'Pay Period'?></th>
                                 <th rowspan="2" class="4 value" data-col="4" style="text-align:center; width: 100px;"><?php echo 'Cheque Date'?></th>
@@ -206,7 +201,7 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
                 "className": "btn-sm",
                 "title":"",
                 "exportOptions": {
-                    "columns": ':visible'
+                    "columns": ':visible',
                 },
                 "customize": function(win) {
                     $(win.document.body)
@@ -246,10 +241,18 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
                 }
             },
             {
-               "extend": "colvis",
-               "className": "btn-sm",
+                extend: 'colvis',
+                className: 'btn-sm',
+                columnText: function (dt, idx, title) {
+                    if (title === 'Employee Contribution') {
+                        return 'Social Security Employee Contribution'; 
+                    } else if (title === 'Employer Contribution') {
+                        return 'Social Security Employer Contribution'; 
+                    }
+                    return title; 
+                }
             }
-        ]
+        ],
     });
     $('.employee_name').on('change', function() {
         federalincomeDataTable.ajax.reload();

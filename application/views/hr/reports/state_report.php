@@ -105,6 +105,7 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
     var csrfName = '<?php echo $this->security->get_csrf_token_name(); ?>';
     var csrfHash = '<?php echo $this->security->get_csrf_hash(); ?>';
     var csv_title= $('h1.stateTax').text();
+    var columntitle = $('h1.stateTax').text().replace('State Tax - ', '').trim();
 
     federalincomeDataTable = $('#socialsecuritytax_list').DataTable({
         "processing": true,
@@ -332,8 +333,22 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
                 }
             },
             {
-               "extend": "colvis",
-               "className": "btn-sm"
+                extend: 'colvis',
+                className: 'btn-sm',
+                columnText: function (dt, idx, title) {
+                    if (idx == 8 && title === 'Working State Tax') {
+                        return 'Employee Working State Tax';  
+                    } else if (idx == 9 && title === 'Living State Tax') {
+                        return 'Employee Living State Tax';  
+                    }
+
+                    if (idx == 10 && title === 'Working State Tax') {
+                        return 'Employer Working State Tax';  
+                    } else if (idx == 11 && title === 'Living State Tax') {
+                        return 'Employer Living State Tax';  
+                    }
+                    return title; 
+                }
             }
         ]
     });

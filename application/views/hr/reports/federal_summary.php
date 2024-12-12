@@ -369,8 +369,34 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
                 }
             },
             {
-               "extend": "colvis",
-               "className": "btn-sm"
+                extend: 'colvis',
+                className: 'btn-sm',
+                columnText: function (dt, idx, title) {  console.log(idx, "idx");
+                    if (idx == 4 && title === 'Employee Contribution') {
+                        return 'Federal Employee Contribution'; 
+                    } else if (idx == 5 && title === 'Employer Contribution') {
+                        return 'Federal Employer Contribution'; 
+                    }
+
+                    if (idx == 6 && title === 'Employee Contribution') {
+                        return 'Social Security Employee Contribution'; 
+                    } else if (idx == 7 && title === 'Employer Contribution') {
+                        return 'Social Security Employer Contribution'; 
+                    }
+
+                    if (idx == 8 && title === 'Employee Contribution') {
+                        return 'Medicare Employee Contribution'; 
+                    } else if (idx == 9 && title === 'Employer Contribution') {
+                        return 'Medicare Employer Contribution'; 
+                    }
+
+                    if (idx == 10 && title === 'Employee Contribution') {
+                        return 'Unemployment Employee Contribution'; 
+                    } else if (idx == 11 && title === 'Employer Contribution') {
+                        return 'Unemployment Employer Contribution'; 
+                    }
+                    return title; 
+                }
             }
         ]
     });
