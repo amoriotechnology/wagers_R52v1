@@ -2051,7 +2051,7 @@ class Chrm extends CI_Controller {
             $time_start1                 = $this->input->post('start');
             $time_end1                   = $this->input->post('end');
             $hours_per_day1              = $this->input->post('sum');
-            $overtime                    = $this->input->post('over_time');
+            $overTime                    = $this->input->post('over_time');
             $daily_bk1                   = $this->input->post('dailybreak');
             $present1                    = $this->input->post('block');
             $purchase_id_1               = $this->db->where('templ_name', $this->input->post('templ_name'))->where('timesheet_id', $data_timesheet['timesheet_id']);
@@ -2072,7 +2072,7 @@ class Chrm extends CI_Controller {
             }
             $data['timesheet_data'] = $this->Hrm_model->timesheet_info_data($data_timesheet['timesheet_id'], $user_id);
             $purchase_id_2          = $this->db->select('timesheet_id')->from('timesheet_info')->where('templ_name', $this->input->post('templ_name'))->where('month', $this->input->post('date_range'))->get()->row()->timesheet_id;
-            $this->session->set_userdata("timesheet_id_new", $purchase_id_2);
+           
             if ($date1) {
                 for ($i = 0, $n = count($date1); $i < $n; $i++) {
                     $date          = $date1[$i];
@@ -2081,10 +2081,10 @@ class Chrm extends CI_Controller {
                     $time_start    = $time_start1[$i];
                     $time_end      = $time_end1[$i];
                     $hours_per_day = $hours_per_day1[$i];
-                    $overtime      = $overtime[$i];
+                    $overtime      = !empty($overTime[$i]) ? $overTime[$i] : null;
                     $present       = isset($present1[$i]) ? $present1[$i] : null;
                     $data1         = array(
-                        'timesheet_id'  => $this->session->userdata("timesheet_id_new"),
+                        'timesheet_id'  => $purchase_id_2,
                         'Date'          => $date,
                         'Day'           => $day,
                         'daily_break'   => $daily_bk,
@@ -2093,7 +2093,7 @@ class Chrm extends CI_Controller {
                         'hours_per_day' => $hours_per_day,
                         'over_time'     => $overtime,
                         'present'       => $present,
-                        'created_by'    => $this->session->userdata('user_id'),
+                        'created_by'    => $user_id,
                     );
                     $this->db->insert('timesheet_info_details', $data1);
                 }
