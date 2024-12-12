@@ -245,8 +245,16 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
                 }
             },
             {
-               "extend": "colvis",
-               "className": "btn-sm"
+                extend: 'colvis',
+                className: 'btn-sm',
+                columnText: function (dt, idx, title) {
+                    if (title === 'Employee Contribution') {
+                        return 'Unemployment Employee Contribution'; 
+                    } else if (title === 'Employer Contribution') {
+                        return 'Unemployment Employer Contribution'; 
+                    }
+                    return title; 
+                }
             }
         ]
     });

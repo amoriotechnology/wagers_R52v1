@@ -364,6 +364,10 @@ table.table.table-hover.table-borderless td {
     background-size: 200px 100%;
     animation: skeleton-loading 1.5s infinite;
 }
+
+div.dt-button-collection{
+    width: 270px !important;
+}
 </style>
 
 
