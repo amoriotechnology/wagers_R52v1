@@ -1843,7 +1843,7 @@ class Chrm extends CI_Controller {
         $data_timesheet['start']          = $date_split[0];
         $data_timesheet['end']            = $date_split[1];
         $start_date                       = $data_timesheet['start'];
-        $split_month                      = explode('/', $data_timesheet['end']);
+        $split_month                       = explode('/', $data_timesheet['end']);
         $quarter                          = $this->getQuarter($split_month[0]);
         $data_timesheet['quarter']        = $quarter;
         $data_timesheet['timesheet_id']   = $this->input->post('tsheet_id');
@@ -1854,8 +1854,6 @@ class Chrm extends CI_Controller {
         $data_timesheet['cheque_date']    = (!empty($this->input->post('cheque_date', TRUE)) ? $this->input->post('cheque_date', TRUE) : '');
         $data_timesheet['bank_name']      = (!empty($this->input->post('bank_name', TRUE)) ? $this->input->post('bank_name', TRUE) : '');
         $data_timesheet['payment_ref_no'] = (!empty($this->input->post('payment_refno', TRUE)) ? $this->input->post('payment_refno', TRUE) : '');
-        $work_hour                        = (!empty($this->input->post('hour_weekly_total')) ? $this->input->post('hour_weekly_total') : []);
-        $data_timesheet['weekly_hours']   = json_encode($work_hour);
         if (!empty($this->input->post('administrator_person', TRUE))) {
             $data_timesheet['uneditable'] = 1;
         } else {
@@ -1877,12 +1875,10 @@ class Chrm extends CI_Controller {
             $this->db->delete('timesheet_info_details');
             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y'));
             $this->db->insert('timesheet_info', $data_timesheet);
-
         } else {
             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y'));
             $this->db->insert('timesheet_info', $data_timesheet);
         }
-
         $purchase_id_2 = $this->db->select('timesheet_id')
             ->from('timesheet_info')
             ->where('templ_name', $this->input->post('templ_name'))
@@ -1903,6 +1899,7 @@ class Chrm extends CI_Controller {
             $time_start    = isset($this->input->post('start')[$i]) ? $this->input->post('start')[$i] : null;
             $time_end      = isset($this->input->post('end')[$i]) ? $this->input->post('end')[$i] : null;
             $hours_per_day = isset($this->input->post('sum')[$i]) ? $this->input->post('sum')[$i] : null;
+            $overtime      = isset($this->input->post('over_time')[$i]) ? $this->input->post('over_time')[$i] : null;
             $daily_bk      = isset($this->input->post('dailybreak')[$i]) ? $this->input->post('dailybreak')[$i] : null;
             $data_info     = array(
                 'timesheet_id'  => $this->session->userdata("timesheet_id_new"),
@@ -1913,13 +1910,15 @@ class Chrm extends CI_Controller {
                 'daily_break'   => $daily_bk,
                 'time_end'      => $time_end,
                 'hours_per_day' => $hours_per_day,
+                'over_time'     => $overtime,
                 'created_by'    => $user_id,
             );
             $this->db->insert('timesheet_info_details', $data_info);
         }
         $this->session->set_flashdata('message', display('save_successfully'));
         redirect(base_url('Chrm/manage_timesheet?id=' . urlencode($this->input->post('admin_company_id')) . '&admin_id=' . urlencode($this->input->post('adminId'))));
-    }
+}
+
     public function expense_list() {
         $setting_detail            = $this->Web_settings->retrieve_setting_editdata();
         $data['expen_list']        = $this->Hrm_model->expense_list();
@@ -2052,6 +2051,7 @@ class Chrm extends CI_Controller {
             $time_start1                 = $this->input->post('start');
             $time_end1                   = $this->input->post('end');
             $hours_per_day1              = $this->input->post('sum');
+            $overtime                    = $this->input->post('over_time');
             $daily_bk1                   = $this->input->post('dailybreak');
             $present1                    = $this->input->post('block');
             $purchase_id_1               = $this->db->where('templ_name', $this->input->post('templ_name'))->where('timesheet_id', $data_timesheet['timesheet_id']);
@@ -2081,6 +2081,7 @@ class Chrm extends CI_Controller {
                     $time_start    = $time_start1[$i];
                     $time_end      = $time_end1[$i];
                     $hours_per_day = $hours_per_day1[$i];
+                    $overtime      = $overtime[$i];
                     $present       = isset($present1[$i]) ? $present1[$i] : null;
                     $data1         = array(
                         'timesheet_id'  => $this->session->userdata("timesheet_id_new"),
@@ -2090,6 +2091,7 @@ class Chrm extends CI_Controller {
                         'time_start'    => $time_start,
                         'time_end'      => $time_end,
                         'hours_per_day' => $hours_per_day,
+                        'over_time'     => $overtime,
                         'present'       => $present,
                         'created_by'    => $this->session->userdata('user_id'),
                     );

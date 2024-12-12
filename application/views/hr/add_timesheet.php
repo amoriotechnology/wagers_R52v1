@@ -85,6 +85,7 @@
                         </div>
 
                         <input type="submit" value="Submit" class="sub_btn btnclr btn text-center"/> 
+
                         <input type="hidden" id="csrf" data-name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
                         <input type="hidden" id="week_setting" data-start="<?= (!empty($setting_detail[0]['start_week'])) ? $setting_detail[0]['start_week'] : 'Monday'; ?>" data-end="<?= (!empty($setting_detail[0]['end_week']) ? $setting_detail[0]['end_week'] : 'Friday'); ?>" >
                     </div>               
@@ -506,6 +507,16 @@ function Timesheetcheck() {
     });
 }
 
+$('.sub_btn').on('mouseenter', function() {
+    if ($(this).is(':disabled')) {
+        showToast(); 
+    }
+});
+
+$('.sub_btn').on('mouseleave', function() {
+    hideToast(); 
+});
+
 
 // while active select & change daterangepicker and creating hourly / Fixed table
 $('body').on('input select change', '#reportrange',function() {
@@ -618,18 +629,19 @@ $('body').on('input select change', '#reportrange',function() {
                     <th class="col-md-2">Start Time (HH:MM)</th>
                     <th class="col-md-2">End Time (HH:MM)</th>
                     <th class="col-md-2">Hours</th>
+                    <th class="col-md-2">Over Time</th>
                     <th class="col-md-2">Action</th>
                 </tr>`);
             $('#tFoot').append(`
                 <tr style="text-align:end">
                     <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours:</td> 
-                    <td><input type="text" id="total_net" class="sumOfDays" name="total_net"  readonly/></td>
+                    <td><input type="text" id="total_net" class="sumOfDays" name="total_net" readonly/></td>
                 </tr>`);
         } else if (response.includes('SalesCommission')) {
             $('#tFoot').append(`
                 <tr style="text-align:end; display:none;">
-                    <td colspan="1" class="text-right" style="font-weight:bold;">Total Hours:</td> 
-                    <td><input type="text" id="total_net"  value="0.00" name="total_net"   readonly/></td>
+                    <td colspan="6" class="text-right" style="font-weight:bold;">Total Hours:</td> 
+                    <td><input type="text" id="total_net"  value="0.00" name="total_net" readonly/></td>
                 </tr>`);
         }
 
@@ -652,6 +664,7 @@ $('body').on('input select change', '#reportrange',function() {
                 response.includes('Fixed')
             ){
                 var presentCount = $('input[type="checkbox"].present:checked').length + 1;
+            console.log(presentCount, "presentCount");
                 $('#total_net').val(presentCount);
                 if(presentCount > 0) {
                     $('.sub_btn').removeAttr('disabled');
@@ -706,9 +719,15 @@ $('body').on('input select change', '#reportrange',function() {
                         <td class="finish-time_`+i+`">
                             <input id="finishTime${monStartWeekDays[i]}" name="end[]" class="hasTimepicker end" data-id="`+data_id+`" type="time" />
                         </td>
+
                         <td class="hours-worked_`+i+`"> 
                             <input id="hoursWorked${monStartWeekDays[i]}"  name="sum[]" class="timeSum hourly_tot_`+data_id+`" readonly type="text" />
                         </td>
+
+                        <td class="overtime_`+i+`">
+                            <input type="text" id="overTime_`+i+`" name="over_time[]" readonly/>
+                        </td>
+
                         <td>
                             <a style="color:white;" class="delete_day btnclr btn  m-b-5 m-r-2"><i class="fa fa-trash" aria-hidden="true"></i> </a>
                         </td>
@@ -802,11 +821,13 @@ $(document).on('change', '.weekly_hour', function () {
 });
 
 $(document).on('select change', '.end','.dailybreak', function () {
+    var $row = $(this).closest('tr');
     var $begin = $(this).closest('tr').find('.start').val();
     var $end = $(this).closest('tr').find('.end').val();
     let valuestart = moment($begin, "HH:mm");
     let valuestop = moment($end, "HH:mm");
     let timeDiff = moment.duration(valuestop.diff(valuestart));
+    console.log(timeDiff);
     var dailyBreakValue = parseInt($(this).closest('tr').find('.dailybreak').val()) || 0;
     var totalMinutes = timeDiff.asMinutes() - dailyBreakValue;
     var hours = Math.floor(totalMinutes / 60);
@@ -858,6 +879,16 @@ $(document).on('select change', '.end','.dailybreak', function () {
         total_netM += tableMinutes;
     });
 
+    var overtimeMinutes = Math.max(0, totalMinutes - 480);
+    var overtimeHours = Math.floor(overtimeMinutes / 60); 
+    var overtimeMinutesRemaining = overtimeMinutes % 60; 
+    var overtimeFormatted = overtimeHours.toString().padStart(2, '0') + ':' + overtimeMinutesRemaining.toString().padStart(2, '0');
+
+    var dataId = $row.find('input[name="over_time[]"]').attr('id');
+    if (dataId) {
+        $('#' + dataId).val(overtimeMinutes > 0 ? overtimeFormatted : '00:00');
+    }
+
     var timeConvertion = convertToTime(week_netH, week_netM);
     $('#hourly_'+data_id).val(timeConvertion).trigger('change');
     var timeConvertion = convertToTime(total_netH, total_netM);
@@ -866,6 +897,7 @@ $(document).on('select change', '.end','.dailybreak', function () {
 
 
 $(document).on('select change', '.start','.dailybreak', function () {
+    var $row = $(this).closest('tr');
     var $begin = $(this).closest('tr').find('.start').val();
     var $end = $(this).closest('tr').find('.end').val();
     let valuestart = moment($begin, "HH:mm");
@@ -917,6 +949,16 @@ $(document).on('select change', '.start','.dailybreak', function () {
         total_netH += tableHours;
         total_netM += tableMinutes;
     });
+
+    var overtimeMinutes = Math.max(0, totalMinutes - 480);
+    var overtimeHours = Math.floor(overtimeMinutes / 60); 
+    var overtimeMinutesRemaining = overtimeMinutes % 60; 
+    var overtimeFormatted = overtimeHours.toString().padStart(2, '0') + ':' + overtimeMinutesRemaining.toString().padStart(2, '0');
+    var dataId = $row.find('input[name="over_time[]"]').attr('id');
+    if (dataId) {
+        $('#' + dataId).val(overtimeMinutes > 0 ? overtimeFormatted : '00:00');
+    }
+
     var timeConvertion = convertToTime(week_netH, week_netM);
     $('#hourly_'+data_id).val(timeConvertion).trigger('change');
     var timeConvertion = convertToTime(total_netH,total_netM);
@@ -1032,16 +1074,26 @@ function convertToTime(hr,min)
 $(document).ready(function() {
     $('.sub_btn').attr('disabled', 'disabled');
 
-    $(document).on('change keyup', '#total_net, #reportrange, input[type="checkbox"].present:checked', function() {
+    $('body').on('change keyup', '#total_net, #reportrange, input[type="checkbox"].present:checked', function() {
         var total_net = $('#total_net').val();
-        
+        $('.sub_btn').attr('disabled', 'disabled');
         if(total_net != "" && total_net != undefined) {
             $('.sub_btn').removeAttr('disabled');
-        } else {
-            $('.sub_btn').attr('disabled', 'disabled');
         }
     });
 })
 
+
+
+function showToast() {
+    toastr.warning("Please ensure all required fields are completed: Employee Name and Date Range.", { 
+        closeButton: false,
+        timeOut: 1000
+    });
+}
+
+function hideToast() {
+    toastr.clear(); 
+}
 
 </script>
