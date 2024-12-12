@@ -751,9 +751,6 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
 <?php
 }
 if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
-
-
-
 <!-- Add States -->
 <div class="modal fade modal-success" id="add_states" role="dialog">
    <div class="modal-dialog" role="document">
@@ -1062,6 +1059,99 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
       </div>
    </div>
 </div>
+<?php } if(in_array(BOOTSTRAP_MODALS['allForms'],$bootstrap_modals)){ ?>
+
+<div class="modal fade modal-success" id="allForms" role="dialog">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" style="text-align:center;">
+        <div class="modal-header btnclr" >
+            <a href="#" class="close" data-dismiss="modal">&times;</a>
+            <h3 class="modal-title">Forms</h3>
+        </div>
+         <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <select class="btnclr btn" id="timesheetSelect">
+                      <option>W2 Form - Select Employee</option>
+                      <?php
+                      $addedIds = [];
+                        foreach ($timesheet_data_emp as $time) {
+                            if (!in_array($time['id'], $addedIds)) {
+                                echo '<option style="color:white;" value="' . htmlspecialchars($time['id']).'?id='.htmlspecialchars($company_id) . '">'
+                                    . htmlspecialchars($time['first_name']) . ' ' . htmlspecialchars($time['last_name'])
+                                    . '</option>';
+                                $addedIds[] = $time['id'];
+                            }
+                        }?>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <a class="btnclr btn" href="<?php echo base_url('chrm/formw3Form?id='.$_GET['id']) ?>">W3 Form</a>
+                </div>
+                <div class="col-md-4">
+                    <a class="btnclr btn" href="<?php echo base_url('chrm/form940Form?id='.$_GET['id']) ?>">Form 940</a>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <select class="btnclr btn" id="form941">
+                      <option style="color:white;" selected>Form 941 - Select a Quarter</option>
+                      <option style="color:white;" value="Q1?id=<?= $_GET['id'] ?>">Q1</option>
+                      <option style="color:white;" value="Q2?id=<?= $_GET['id'] ?>">Q2</option>
+                      <option style="color:white;" value="Q3?id=<?= $_GET['id'] ?>">Q3</option>
+                      <option style="color:white;" value="Q4?id=<?= $_GET['id'] ?>">Q4</option>
+                    </select> 
+                </div>
+                <div class="col-md-4">
+                    <a class="btnclr btn" href="<?php echo base_url('chrm/form944Form?id=' . $_GET['id']); ?>">Form 944</a>
+                </div>
+                <div class="col-md-4">
+                    <select class="btnclr btn" id="timesheetSelect3">
+                        <option>NJ927 Form</option>
+                        <option style="color:white;"  value="Q1?id=<?= $_GET['id'] ?>">Q1</option>
+                        <option style="color:white;"  value="Q2?id=<?= $_GET['id'] ?>">Q2</option>
+                        <option style="color:white;"  value="Q3?id=<?= $_GET['id'] ?>">Q3</option>
+                        <option style="color:white;"  value="Q4?id=<?= $_GET['id'] ?>">Q4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <select class="btnclr btn" id="UC_2a_form">
+                        <option style="color:white;" selected>UC-2A Form - Select a Quarter</option>
+                        <option style="color:white;" value="Q1?id=<?= $_GET['id'] ?>">Q1</option>
+                        <option style="color:white;" value="Q2?id=<?= $_GET['id'] ?>">Q2</option>
+                        <option style="color:white;" value="Q3?id=<?= $_GET['id'] ?>">Q3</option>
+                        <option style="color:white;" value="Q4?id=<?= $_GET['id'] ?>">Q4</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <a class="btnclr btn" href="<?php echo base_url('chrm/wr30_form?id=' . $_GET['id']); ?>">WR30 Form</a>
+                </div>
+                <div class="col-md-4">
+                    <select class="btnclr btn" id="timesheetSelecttwo">
+                        <option>F1099-NEC-Select Employee</option>
+                        <?php
+                        $addedIds = [];
+                        foreach ($merged_data_salespartner as $sales) {
+                            if (!in_array($sales['id'], $addedIds)) {
+                              echo '<option style="color:white;" value="' . htmlspecialchars($sales['id']) . '">' . htmlspecialchars($sales['first_name']) . ' ' . htmlspecialchars($sales['middle_name']) . ' ' . htmlspecialchars($sales['last_name']) . '</option>';
+                              $addedIds[] = $sales['id'];
+                            }
+                        }?>
+                    </select>
+                </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
+         </div>
+         <?php echo form_close() ?>
+      </div>
+   </div>
+</div>
+
 <?php } ?>
 
 
@@ -1351,6 +1441,49 @@ var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
       });
       event.preventDefault();
    });
+
+
+document.addEventListener('change', function (event) {
+    if (event.target && event.target.id === 'timesheetSelect') {
+        var selectedId = event.target.value;
+        var baseLink = '<?php echo base_url('chrm/w2Form/'); ?>';
+        window.location.href = selectedId ? baseLink + selectedId : baseLink;
+    }
+});
+
+
+document.addEventListener('change', function (event) {
+    if (event.target && event.target.id === 'form941') {
+        var selectedId = event.target.value;
+        var baseLink = '<?php echo base_url('chrm/form941Form/'); ?>';
+        window.location.href = selectedId ? baseLink + selectedId : baseLink;
+    }
+});
+
+
+document.addEventListener('change', function (event) {
+    if (event.target && event.target.id === 'timesheetSelect3') {
+        var selectedId = event.target.value;
+        var baseLink = '<?php echo base_url('chrm/formnj927/'); ?>';
+        window.location.href = selectedId ? baseLink + selectedId : baseLink;
+    }
+});
+
+document.addEventListener('change', function (event) {
+    if (event.target && event.target.id === 'UC_2a_form') {
+        var selectedId = event.target.value;
+        var baseLink = '<?php echo base_url('chrm/UC_2a_form/'); ?>';
+        window.location.href = selectedId ? baseLink + selectedId : baseLink;
+    }
+});
+
+document.addEventListener('change', function (event) {
+    if (event.target && event.target.id === 'timesheetSelecttwo') {
+        var selectedId = event.target.value;
+        var baseLink = '<?php echo base_url('chrm/formfl099nec/'); ?>';
+        window.location.href = selectedId ? baseLink + selectedId : baseLink;
+    }
+});
 
 </script>
 
