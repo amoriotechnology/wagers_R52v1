@@ -1858,7 +1858,7 @@ input {
 
 <script>
 $(document).ready(function() {
-    //  downloadPagesAsPDF();
+     downloadPagesAsPDF();
 });
 async function downloadPagesAsPDF() {
   $('#generatedownload').modal('show');

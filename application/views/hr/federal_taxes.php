@@ -42,119 +42,14 @@
       <div class="row">
          <div class="col-sm-12">
             <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
-             <div class="panel-body">
-                  <div class="row" style="display: flex; justify-content: space-between;">
-                      <div class="col">
-                          <select class="btnclr btn" id="timesheetSelect">
-                              <option>W2 Form - Select Employee</option>
-                              <?php
-                              $addedIds = [];
-                              foreach ($timesheet_data_emp as $time) {
-                                  if (!in_array($time['id'], $addedIds)) {
-                                        echo '<option style="color:white;" value="' . htmlspecialchars($time['id']).'?id='.htmlspecialchars($company_id) . '">'
-                                          . htmlspecialchars($time['first_name']) . ' ' . htmlspecialchars($time['last_name'])
-                                          . '</option>';
-                                      $addedIds[] = $time['id'];
-                                  }
-                              } ?>
-                          </select>
-                          <script>
-                              document.getElementById('timesheetSelect').addEventListener('change', function() {
-                                  var selectedId = this.value;
-                                  var baseLink = '<?php echo base_url('chrm/w2Form/'); ?>';
-                                  window.location.href = selectedId ? baseLink + selectedId : baseLink;
-                              });
-                          </script>
-                      </div>
-                      <div class="col">
-                       <a class="btnclr btn" href="<?php echo base_url('chrm/formw3Form?id='.$_GET['id']) ?>">W3 Form</a>
-                      </div>
-                      <div class="col">
-                          <a class="btnclr btn" href="<?php echo base_url('chrm/form940Form?id='.$_GET['id']) ?>">Form 940</a>
-                      </div>
-                      <div class="col">
-                          <select class="btnclr btn" id="form941">
-                              <option style="color:white;" selected>Form 941 - Select a Quarter</option>
-                              <option style="color:white;" value="Q1?id=<?= $_GET['id'] ?>&admin_id=<?= $_GET['admin_id'] ?>">Q1</option>
-                              <option style="color:white;" value="Q2?id=<?= $_GET['id'] ?>&admin_id=<?= $_GET['admin_id'] ?>">Q2</option>
-                              <option style="color:white;" value="Q3?id=<?= $_GET['id'] ?>&admin_id=<?= $_GET['admin_id'] ?>">Q3</option>
-                              <option style="color:white;" value="Q4?id=<?= $_GET['id'] ?>&admin_id=<?= $_GET['admin_id'] ?>">Q4</option>
-                          </select>
-                          <script>
-                              document.getElementById('form941').addEventListener('change', function() {
-                                  var selectedId = this.value;
-                                  var baseLink = '<?php echo base_url('chrm/form941Form/'); ?>';
-                                  window.location.href = selectedId ? baseLink + selectedId : baseLink;
-                              });
-                          </script>
-                      </div>
-                      <div class="col">
-                          <a class="btnclr btn" href="<?php echo base_url('chrm/form944Form?id=' . $_GET['id']); ?>">Form 944</a>
-                      </div>
-                      <div class="col">
-                          <a class="btnclr btn" style="display:none;" href="<?php echo base_url('chrm/form1099nec'); ?>">1099NEC Form</a>
-                      </div>
-                      <div class="col">
-                          <select class="btnclr btn" id="timesheetSelect3">
-                              <option>NJ927 Form</option>
-                             <option style="color:white;"  value="Q1?id=<?= $_GET['id'] ?>">Q1</option>
-                              <option style="color:white;"  value="Q2?id=<?= $_GET['id'] ?>">Q2</option>
-                              <option style="color:white;"  value="Q3?id=<?= $_GET['id'] ?>">Q3</option>
-                              <option style="color:white;"  value="Q4?id=<?= $_GET['id'] ?>">Q4</option>
-                          </select>
-                          <script>
-                              document.getElementById('timesheetSelect3').addEventListener('change', function() {
-                                  var selectedId = this.value;
-                                  var baseLink = '<?php echo base_url('chrm/formnj927/'); ?>';
-                                  window.location.href = selectedId ? baseLink + selectedId : baseLink;
-                              });
-                          </script>
-                      </div>
-                      <div class="col">
-                          <select class="btnclr btn" id="UC_2a_form">
-                              <option style="color:white;" selected>UC-2A Form - Select a Quarter</option>
-                              <option style="color:white;" value="Q1?id=<?= $_GET['id'] ?>">Q1</option>
-                              <option style="color:white;" value="Q2?id=<?= $_GET['id'] ?>">Q2</option>
-                              <option style="color:white;" value="Q3?id=<?= $_GET['id'] ?>">Q3</option>
-                              <option style="color:white;" value="Q4?id=<?= $_GET['id'] ?>">Q4</option>
-                          </select>
-                          <script>
-                              document.getElementById('UC_2a_form').addEventListener('change', function() {
-                                  var selectedId = this.value;
-                                  var baseLink = '<?php echo base_url('chrm/UC_2a_form/'); ?>';
-                                  window.location.href = selectedId ? baseLink + selectedId : baseLink;
-                              });
-                          </script>
-                      </div>
-                      <div class="col">
-                          <a class="btnclr btn" href="<?php echo base_url('chrm/wr30_form?id=' . $_GET['id']); ?>">WR30 Form</a>
-                      </div>
-                      <div class="col">
-                          <select class="btnclr btn" id="timesheetSelecttwo">
-                              <option>F1099-NEC-Select Employee</option>
-                              <?php
-                              $addedIds = [];
-                              foreach ($merged_data_salespartner as $sales) {
-                                  if (!in_array($sales['id'], $addedIds)) {
-                                      echo '<option style="color:white;" value="' . htmlspecialchars($sales['id']) . '">' . htmlspecialchars($sales['first_name']) . ' ' . htmlspecialchars($sales['middle_name']) . ' ' . htmlspecialchars($sales['last_name']) . '</option>';
-                                      $addedIds[] = $sales['id'];
-                                  }
-                              } ?>
-                          </select>
-                          <script>
-                              document.getElementById('timesheetSelecttwo').addEventListener('change', function() {
-                                  var selectedId = this.value;
-                                  var baseLink = '<?php echo base_url('chrm/formfl099nec/'); ?>';
-                                  window.location.href = selectedId ? baseLink + selectedId : baseLink;
-                              });
-                          </script>
-                      </div>
+               <div class="panel-body">
+                  <div class="row">
+                     <button class="btnclr btn" style="margin-left: 20px !important;" data-toggle="modal" data-target="#allForms"><i class="fa fa-wpforms" aria-hidden="true"></i> Forms</button>
                   </div>
                </div>
- </div>
+            </div>
          </div>
       </div>
-
       <div class="row">
          <div class="col-sm-12">
             <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
@@ -162,10 +57,8 @@
                   <div class="row">
                      <h3 class="col-sm-3" style="margin: 0;">Federal Taxes</h3>
                      <div class="col-sm-9 text-right">
-                        
                      </div>
                      <br>
-
                      <div class="col-sm-12">
                         <div class="panel panel-bd lobidrag" >
                            <div class="panel-body">
@@ -175,43 +68,39 @@
                                        <thead>
                                           <tr style="height:25px;">
                                              <th class='btnclr' style="width: 170px;"><?php echo display('sl') ?></th>
-                                             <th class='btnclr' class="text-center" style="text-align: justify;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax Name</th>
-                                             
+                                             <th class='btnclr' class="text-center">Tax Name</th>
+                                             <th class='btnclr' class="text-center">Action</th>
                                           </tr>
                                        </thead>
                                        <tbody>
                                           <tr role="row" class="odd">
-                                             <td tabindex="0"  style="text-align: center;"  >1</td>
-                                             <td style="padding-left: 19%;">Federal Income Tax &nbsp;&nbsp;
-                                                <span style="margin-left: 66%;">  
+                                             <td tabindex="0"  style="text-align: center;">1</td>
+                                             <td class="text-start align-middle">Federal Income Tax</td>
+                                             <td>
                                                 <a href="<?php echo base_url('Chrm/add_taxes_detail').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>"  class="btn btnclr btn-sm federal_tax" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add Taxes Detail"><i class="fa fa-window-restore"  aria-hidden="true"></i></a>
-                                                </span>
                                                 <input type="hidden" name="tax" id="federal_tax" value="Federal Income tax">
                                              </td>
                                           </tr>
                                           <tr role="row" class="odd">
                                              <td tabindex="0" style="text-align: center;" >2</td>
-                                             <td  style="padding-left: 19%;" >Social Security
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 68%;">  
+                                             <td class="text-start align-middle">Social Security</td>
+                                             <td>
                                                 <a href="<?php echo base_url('Chrm/socialsecurity_detail').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>"  class="btn btnclr btn-sm social_security" id="social_security" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add Taxes Detail"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
-                                                </span>
                                                 <input type="hidden" name="tax" id="social_security" value="Social Security">
                                              </td>
                                           </tr>
                                           <tr role="row" class="odd">
                                              <td tabindex="0" style="text-align: center;" >3</td>
-                                             <td style="padding-left: 19%;" >Medicare &nbsp;&nbsp; 
-                                                <span style="margin-left: 72%;">  
-                                                   <a href="<?php echo base_url('Chrm/medicare_detail').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>"  class="btn btnclr btn-sm medicare" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add Taxes Detail"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
-                                                </span>
+                                             <td class="text-start align-middle">Medicare</td>
+                                             <td>
+                                                <a href="<?php echo base_url('Chrm/medicare_detail').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>"  class="btn btnclr btn-sm medicare" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add Taxes Detail"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
                                              </td>
                                           </tr>
                                           <tr role="row" class="odd">
                                              <td tabindex="0" style="text-align: center;" >4</td>
-                                             <td style="padding-left: 19%;" >Federal Unemployment &nbsp;&nbsp; 
-                                                <span style="margin-left: 64%;">  
-                                                   <a href="<?php echo base_url('Chrm/federalunemployment_detail').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>"  class="btn btnclr btn-sm federal_unemployment" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add Taxes Detail"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
-                                                </span>
+                                             <td class="text-start align-middle">Federal Unemployment</td>
+                                             <td>
+                                                <a href="<?php echo base_url('Chrm/federalunemployment_detail').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>"  class="btn btnclr btn-sm federal_unemployment" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add Taxes Detail"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
                                              </td>
                                           </tr>
                                        </tbody>
@@ -239,11 +128,11 @@
                   <div class="row">
                      <h3 class="col-sm-3" style="margin: 0;">State Taxes</h3>
                      <div class="col-sm-9 text-right">
-                        <a href="#" data-toggle="modal" data-target="#add_states"   class="btnclr btn"> Add States </a>
-                        <a href="#" data-toggle="modal" data-target="#add_state_tax"   class="btnclr btn">Add New State Tax </a>
+                        <a href="#" data-toggle="modal" data-target="#add_states" class="btnclr btn"> Add States </a>
+                        <a href="#" data-toggle="modal" data-target="#add_state_tax" class="btnclr btn">Add New State Tax </a>
                      </div>
 
-                     <div class="col-sm-12">
+                     <div class="col-sm-12 mt-4">
                         <div class="panel panel-bd lobidrag">
                            <div class="panel-body">
                            <div class="table-responsive" >
@@ -317,12 +206,11 @@
                   <div class="row">
                      <h3 class="col-sm-3" style="margin: 0;">City Taxes</h3>
                      <div class="col-sm-9 text-right">
-                           <!-- <a href="#" data-toggle="modal" data-target="#add_city" class="btnclr btn"> Add City </a> -->
                         <a href="#" data-toggle="modal" data-target="#add_city_info"   class="btnclr btn"> Add City </a>
                         <a href="#" data-toggle="modal" data-target="#add_city_tax"   class="btnclr btn">Add City Tax </a>
                      </div>
 
-                     <div class="col-sm-12">
+                     <div class="col-sm-12 mt-4">
                         <div class="panel panel-bd lobidrag">
                            <div class="panel-body" >
                               <div class="table-responsive" >
@@ -376,14 +264,12 @@
                   <div class="row">
                      <h3 class="col-sm-3" style="margin: 0;">County  Taxes</h3>
                      <div class="col-sm-9 text-right">
-                        <!-- <a href="#" data-toggle="modal" data-target="#add_city" class="btnclr btn"> Add City </a> -->
                         <a href="#" data-toggle="modal" data-target="#add_county_info"   class="btnclr btn"> Add County </a>
                         <a href="#" data-toggle="modal" data-target="#add_county_tax"   class="btnclr btn">Add County Tax </a>
                      </div>
-                     <div class="col-sm-12">
+                     <div class="col-sm-12 mt-4">
                         <div class="panel panel-bd lobidrag">
-                           <div class="panel-body" >
-                           <!-- style="overflow-y: auto;height:500px;" -->
+                           <div class="panel-body">
                               <div class="table-responsive" >
                                  <?php
                                     echo "<table border='0' class='table table-striped' cellspacing='0' cellpadding='0' style='table-layout:fixed;
@@ -395,7 +281,6 @@
                                     </thead><tbody>";
                                     $k=1;
                                     for($i=0; $i < sizeof($county_list); $i++) {
-                                       // echo $states_list[$i];
                                        $splt=explode(",",$county_list[$i]['tax']);
                                        $j=1;
                                        echo "<tr style='border: 1px solid #D7D4D6;background: white;' ><td style='text-align:center;' >".$k."</td><td class='county_name' style='text-align:center;font-weight:bold;border: 1px solid #D7D4D6;background: white;' rowspan='".$j."'>". $county_list[$i]['state']."</td> <td><table>";
@@ -425,13 +310,14 @@
             </div>
          </div>
       </div>
+      <br><br>
    </section>  
 
 </div>
 
 
 <?php 
-   $modaldata['bootstrap_modals'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax');
+   $modaldata['bootstrap_modals'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax', 'allForms');
    $this->load->view('include/bootstrap_modal', $modaldata);
 ?>
 
